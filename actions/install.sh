@@ -1,9 +1,9 @@
 #!/bin/sh
 
 
-mv ./actions/create_eo.yaml /opt/stackstorm/packs/bitesize/actions/workflows/
+mv ./create_eo.yaml /opt/stackstorm/packs/bitesize/actions/workflows/
 
-mv ./actions/* /opt/stackstorm/packs/bitesize/actions/
+mv ./* /opt/stackstorm/packs/bitesize/actions/
 
 cd /opt/stackstorm/packs/bitesize/actions/
 
