@@ -1,0 +1,11 @@
+---
+    name: "set_eo_svc"
+    entry_point: "set_eo_svc.py"
+    pack: "bitesize"
+    description: "set Service k8s resource for Environment Operator"
+    runner_type: python-script
+    enabled: true
+    parameters:
+        namespace:
+          type: "string"
+          required: true

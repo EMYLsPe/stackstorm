@@ -1,0 +1,13 @@
+---
+    name: "set_eo_limits"
+    entry_point: "set_eo_limits.py"
+    pack: "bitesize"
+    description: "set LimitRange k8s resource payload for the Environment Operator deployment"
+    runner_type: python-script
+    enabled: true
+    parameters:
+        namespace:
+          type: "string"
+          required: true
+    
+  

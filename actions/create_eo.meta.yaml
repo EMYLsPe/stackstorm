@@ -1,0 +1,57 @@
+---
+name: "create_eo"
+runner_type: "mistral-v2"
+description: "create & deploy Environment Operator"
+enabled: true
+entry_point: "workflows/create_eo.yaml"
+pack: "bitesize"
+parameters:
+  namespace:
+    type: "string"
+    description: "namespace to create EO eg: sllax-dev => <project name>-<environment type>"
+    required: true
+  gitRemoteRepository:
+    type: "string"
+    description: "eg: ssh://git@bitbucket.pearson.com/laxapana/bitesize.git"
+    required: true
+  gitBranch:
+    type: "string"
+    description: "eg: modular, master"
+    required: true
+  project:
+    type: "string"
+    description: "project name eg: slax, lass"
+    required: true
+  environmentType:
+    type: "string"
+    description: "eg: pre, nft, stg, ..."
+    required: true
+  bitesizeFile:
+    type: "string"
+    description: "eg: dev_environments.bitesize"
+    required: true
+  imageVersion:
+    default: "1.3.7"
+    type: "string"
+    description: "environment-operator image version"
+    required: true
+  git_private_key:
+    type: "string"
+    description: "enter git private key without encode"
+    required: true
+  environment:
+    type: "string"
+    description: "eg: glp1, paas1, ..."
+    required: true
+  awsRegion:
+    type: "string"
+    description: "eg: us-east-2, ..."
+    required: true
+  image:
+    default: "pearsontechnology/environment-operator"
+    type: "string"
+    description: "provide environment-operator image or keep the default image"
+    required: true
+  ingressHost:
+    type: "string"
+    description: "default host is : environment-operator.<namespace>.bite.pearsondev.tech , you can change it here."
