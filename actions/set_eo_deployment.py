@@ -144,6 +144,7 @@ class CreateEODeployment(Action):
         self.imageVersion        = imageVersion
         self.environment         = environment
         self.awsRegion           = awsRegion
+        self.image               = image
 
         return (True, self._createDeploymentConfig())
 
@@ -158,6 +159,6 @@ class CreateEODeployment(Action):
         myconf['spec']['template']['spec']['containers'][0]['env'][11]['value'] = self.environment
         myconf['spec']['template']['spec']['containers'][0]['env'][12]['value'] = self.awsRegion
         myconf['spec']['template']['spec']['containers'][0]['env'][13]['value'] = self.environmentType
-        myconf['spec']['template']['spec']['containers'][0]['image']            = self.imageVersion + ':' + self.imageVersion
+        myconf['spec']['template']['spec']['containers'][0]['image']            = self.image + ':' + self.imageVersion
 
         return myconf

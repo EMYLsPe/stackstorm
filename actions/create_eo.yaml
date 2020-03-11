@@ -20,300 +20,301 @@ workflows:
       - ingressHost
 
     tasks:
-       set_eo_limits:
-         action: bitesize.set_eo_limits
-         input:
-           namespace: <% $.namespace %>
-         publish:
-           limits_template: <% task(set_eo_limits).result.result %>
-         on-success:
-           - create_eo_limits
+      set_eo_limits:
+        action: bitesize.set_eo_limits
+        input:
+          namespace: <% $.namespace %>
+        publish:
+          limits_template: <% task(set_eo_limits).result.result %>
+        on-success:
+          - create_eo_limits
 
-       create_eo_limits:
-         action: kubernetes.k8saction
-         input:
-           api_group: CoreV1Api
-           action_name: create_namespaced_limit_range
-           params:
-             namespace: <% $.namespace %>
-             body: <% $.limits_template %>
-         on-success:
-           - get_eo_git_private_key_secret_template
+      create_eo_limits:
+        action: kubernetes.k8saction
+        input:
+          api_group: CoreV1Api
+          action_name: create_namespaced_limit_range
+          params:
+            namespace: <% $.namespace %>
+            body: <% $.limits_template %>
+        on-success:
+          - get_eo_git_private_key_secret_template
 
-       get_eo_git_private_key_secret_template:
-         action: bitesize.set_eo_secrets
-         input:
-           namespace: <% $.namespace %>
-           name: "git-private-key"
-           secrets:
-             key: <% $.git_private_key %>
-           isSecretEncrypted: false
-         publish:
-           git_private_key_secret_template: <% task(get_eo_git_private_key_secret_template).result.result %>
-         on-success:
-           - create_k8s_secret_git_private_key
+      get_eo_git_private_key_secret_template:
+        action: bitesize.set_eo_secrets
+        input:
+          namespace: <% $.namespace %>
+          name: "git-private-key"
+          secrets:
+            key: <% $.git_private_key %>
+          isSecretEncrypted: false
+        publish:
+          git_private_key_secret_template: <% task(get_eo_git_private_key_secret_template).result.result %>
+        on-success:
+          - create_k8s_secret_git_private_key
 
-       create_k8s_secret_git_private_key:
-         action: kubernetes.k8saction
-         input:
-           api_group: CoreV1Api
-           action_name: create_namespaced_secret
-           params:
-             namespace: <% $.namespace %>
-             body: <% $.git_private_key_secret_template %>
-         publish:
-           git-private-key: <% $.git_private_key %>
-         on-success:
-           - get_uuidgen
+      create_k8s_secret_git_private_key:
+        action: kubernetes.k8saction
+        input:
+          api_group: CoreV1Api
+          action_name: create_namespaced_secret
+          params:
+            namespace: <% $.namespace %>
+            body: <% $.git_private_key_secret_template %>
+        publish:
+          git-private-key: <% $.git_private_key %>
+        on-success:
+          - get_uuidgen
 
-       get_uuidgen:
-         action: core.local
-         input:
-           cmd: "uuidgen"
-         publish:
-           auth_token_file: <% task(get_uuidgen).result.stdout %>
-         on-success:
-           - get_eo_uuidgen_secret_template
+      get_uuidgen:
+        action: core.local
+        input:
+          cmd: "uuidgen"
+        publish:
+          auth_token_file: <% task(get_uuidgen).result.stdout %>
+        on-success:
+          - get_eo_uuidgen_secret_template
 
-       get_eo_uuidgen_secret_template:
-         action: bitesize.set_eo_secrets
-         input:
-           namespace: <% $.namespace %>
-           name: "auth-token-file"
-           secrets:
-             auth-token-file: <% $.auth_token_file %>
-           isSecretEncrypted: false
-         publish:
-           auth_token_file_secret_template: <% task(get_eo_uuidgen_secret_template).result.result %>
-         on-success:
-           - create_eo_auth-token-file
+      get_eo_uuidgen_secret_template:
+        action: bitesize.set_eo_secrets
+        input:
+          namespace: <% $.namespace %>
+          name: "auth-token-file"
+          secrets:
+            auth-token-file: <% $.auth_token_file %>
+          isSecretEncrypted: false
+        publish:
+          auth_token_file_secret_template: <% task(get_eo_uuidgen_secret_template).result.result %>
+        on-success:
+          - create_eo_auth-token-file
 
-       create_eo_auth-token-file:
-         action: kubernetes.k8saction
-         input:
-           api_group: CoreV1Api
-           action_name: create_namespaced_secret
-           params:
-             namespace: <% $.namespace %>
-             body: <% $.auth_token_file_secret_template %>
-         publish:
-           auth_token_file: <% $.auth_token_file %>
-         on-success:
-           - set_eo_ingress
+      create_eo_auth-token-file:
+        action: kubernetes.k8saction
+        input:
+          api_group: CoreV1Api
+          action_name: create_namespaced_secret
+          params:
+            namespace: <% $.namespace %>
+            body: <% $.auth_token_file_secret_template %>
+        publish:
+          auth_token_file: <% $.auth_token_file %>
+        on-success:
+          - set_eo_ingress
 
-       set_eo_ingress:
-         action: bitesize.set_eo_ingress
-         input:
-           namespace: <% $.namespace %>
-           ingressHost: <% $.ingressHost %>
-         publish:
-           ingress_template: <% task(set_eo_ingress).result.result %>
-         on-success:
-           - create_eo_ingress
+      set_eo_ingress:
+        action: bitesize.set_eo_ingress
+        input:
+          namespace: <% $.namespace %>
+          ingressHost: <% $.ingressHost %>
+        publish:
+          ingress_template: <% task(set_eo_ingress).result.result %>
+        on-success:
+          - create_eo_ingress
 
-       create_eo_ingress:
-         action: kubernetes.k8saction
-         input:
-           api_group: "ExtensionsV1beta1Api"
-           action_name: "create_namespaced_ingress"
-           params:
-             namespace: <% $.namespace %>
-             body: <% $.ingress_template %>
-         on-success:
-           - set_eo_svc
+      create_eo_ingress:
+        action: kubernetes.k8saction
+        input:
+          api_group: "ExtensionsV1beta1Api"
+          action_name: "create_namespaced_ingress"
+          params:
+            namespace: <% $.namespace %>
+            body: <% $.ingress_template %>
+        on-success:
+          - set_eo_svc
 
-       set_eo_svc:
-         action: bitesize.set_eo_svc
-         input:
-           namespace: <% $.namespace %>
-         publish:
-           svc_template: <% task(set_eo_svc).result.result %>
-         on-success:
-           - create_eo_svc
+      set_eo_svc:
+        action: bitesize.set_eo_svc
+        input:
+          namespace: <% $.namespace %>
+        publish:
+          svc_template: <% task(set_eo_svc).result.result %>
+        on-success:
+          - create_eo_svc
 
-       create_eo_svc:
-         action: kubernetes.k8saction
-         input:
-           api_group: "CoreV1Api"
-           action_name: "create_namespaced_service"
-           params:
-             namespace: <% $.namespace %>
-             body: <% $.svc_template %>
-         on-success:
-           - create_eo_service_account
+      create_eo_svc:
+        action: kubernetes.k8saction
+        input:
+          api_group: "CoreV1Api"
+          action_name: "create_namespaced_service"
+          params:
+            namespace: <% $.namespace %>
+            body: <% $.svc_template %>
+        on-success:
+          - create_eo_service_account
 
-       create_eo_service_account:
-         action: kubernetes.k8saction
-         input:
-           api_group: CoreV1Api
-           action_name: create_namespaced_service_account
-           params:
-             namespace: <% $.namespace %>
-             body:
-               metadata:
-                 name: environment-operator
-                 namespace: <% $.namespace %>
-               automount_service_account_token: "false"
-         on-success:
-           - create_eo_role_binding_to_clusterrole
+      create_eo_service_account:
+        action: kubernetes.k8saction
+        input:
+          api_group: CoreV1Api
+          action_name: create_namespaced_service_account
+          params:
+            namespace: <% $.namespace %>
+            body:
+              metadata:
+                name: environment-operator
+                namespace: <% $.namespace %>
+              automount_service_account_token: "false"
+        on-success:
+          - create_eo_role_binding_to_clusterrole
 
-       create_eo_role_binding_to_clusterrole:
-         action: kubernetes.k8saction
-         input:
-           api_group: RbacAuthorizationV1Api
-           action_name: create_namespaced_role_binding
-           params:
-             namespace: <% $.namespace %>
-             body:
-               metadata:
-                 name: environment-operator
-                 namespace: <% $.namespace %>
-               subjects:
-                 - kind: User
-                   name: customer:<% $.project %>:readonly
-                   apiGroup: rbac.authorization.k8s.io
-                   namespace: <% $.namespace %>
-               roleRef:
-                 kind: ClusterRole
-                 name: environment-operator
-                 apiGroup: rbac.authorization.k8s.io
-         on-success:
-           - check_eo_istio_role_binding_is_exist
+      create_eo_role_binding_to_clusterrole:
+        action: kubernetes.k8saction
+        input:
+          api_group: RbacAuthorizationV1Api
+          action_name: create_namespaced_role_binding
+          params:
+            namespace: <% $.namespace %>
+            body:
+              metadata:
+                name: environment-operator
+                namespace: <% $.namespace %>
+              subjects:
+                - kind: User
+                  name: customer:<% $.project %>:readonly
+                  apiGroup: rbac.authorization.k8s.io
+                  namespace: <% $.namespace %>
+              roleRef:
+                kind: ClusterRole
+                name: environment-operator
+                apiGroup: rbac.authorization.k8s.io
+        on-success:
+          - check_eo_istio_role_binding_is_exist
 
-       check_eo_istio_role_binding_is_exist:
-         action: kubernetes.k8saction
-         input:
-           api_group: RbacAuthorizationV1Api
-           action_name: read_namespaced_role_binding
-           params:
-             name: environment-operator
-             namespace: istio-system
-         publish:
-           eo_istio_role_binding: <% task(check_eo_istio_role_binding_is_exist).result.result %>
-         on-success:
-           - set_eo_istio_role_binding
-         on-error:
-           - create_eo_istio_role_binding
+      check_eo_istio_role_binding_is_exist:
+        action: kubernetes.k8saction
+        input:
+          api_group: RbacAuthorizationV1Api
+          action_name: read_namespaced_role_binding
+          params:
+            name: environment-operator
+            namespace: istio-system
+        publish:
+          eo_istio_role_binding: <% task(check_eo_istio_role_binding_is_exist).result.result %>
+        on-success:
+          - set_eo_istio_role_binding
+        on-error:
+          - create_eo_istio_role_binding
 
-       set_eo_istio_role_binding:
-         action: bitesize.set_eo_istio_role_binding
-         input:
-           namespace: <% $.namespace %>
-           istioRoleBinding: <% $.eo_istio_role_binding %>
-         publish:
-           eo_istio_role_binding: <% task(set_eo_istio_role_binding).result.result %>
-         on-success:
-           - patch_eo_istio_role_binding
+      set_eo_istio_role_binding:
+        action: bitesize.set_eo_istio_role_binding
+        input:
+          namespace: <% $.namespace %>
+          istioRoleBinding: <% $.eo_istio_role_binding %>
+          append: "true"
+        publish:
+          eo_istio_role_binding: <% task(set_eo_istio_role_binding).result.result %>
+        on-success:
+          - patch_eo_istio_role_binding
 
-       patch_eo_istio_role_binding:
-         action: kubernetes.k8saction
-         input:
-           api_group: RbacAuthorizationV1Api
-           action_name: patch_namespaced_role_binding
-           params:
-             name: environment-operator
-             namespace: istio-system
-             body: <% $.eo_istio_role_binding %>
-         on-success:
-           - create_eo_role
+      patch_eo_istio_role_binding:
+        action: kubernetes.k8saction
+        input:
+          api_group: RbacAuthorizationV1Api
+          action_name: patch_namespaced_role_binding
+          params:
+            name: environment-operator
+            namespace: istio-system
+            body: <% $.eo_istio_role_binding %>
+        on-success:
+          - create_eo_role
 
-       create_eo_istio_role_binding:
-         action: kubernetes.k8saction
-         input:
-           api_group: RbacAuthorizationV1Api
-           action_name: create_namespaced_role_binding
-           params:
-             namespace: istio-system
-             body:
-               metadata:
-                 name: environment-operator
-                 namespace: istio-system
-               subjects:
-                 - kind: ServiceAccount
-                   name: environment-operator
-                   namespace: <% $.namespace %>
-               roleRef:
-                 kind: ClusterRole
-                 name: environment-operator
-                 apiGroup: rbac.authorization.k8s.io
-         on-success:
-           - create_eo_role
+      create_eo_istio_role_binding:
+        action: kubernetes.k8saction
+        input:
+          api_group: RbacAuthorizationV1Api
+          action_name: create_namespaced_role_binding
+          params:
+            namespace: istio-system
+            body:
+              metadata:
+                name: environment-operator
+                namespace: istio-system
+              subjects:
+                - kind: ServiceAccount
+                  name: environment-operator
+                  namespace: <% $.namespace %>
+              roleRef:
+                kind: ClusterRole
+                name: environment-operator
+                apiGroup: rbac.authorization.k8s.io
+        on-success:
+          - create_eo_role
 
-       create_eo_role:
-         action: kubernetes.k8saction
-         input:
-           api_group: RbacAuthorizationV1Api
-           action_name: create_namespaced_role
-           params:
-             namespace: <% $.namespace %>
-             body:
-               metadata:
-                 name: "environment-operator-namespace-access"
-                 namespace: <% $.namespace %>
-               rules:
-                 - apiGroups:
-                     - '*'
-                   resources:
-                     - '*'
-                   verbs:
-                     - '*'
-         on-success:
-           - create_eo_rolebinding_to_role
+      create_eo_role:
+        action: kubernetes.k8saction
+        input:
+          api_group: RbacAuthorizationV1Api
+          action_name: create_namespaced_role
+          params:
+            namespace: <% $.namespace %>
+            body:
+              metadata:
+                name: "environment-operator-namespace-access"
+                namespace: <% $.namespace %>
+              rules:
+                - apiGroups:
+                    - '*'
+                  resources:
+                    - '*'
+                  verbs:
+                    - '*'
+        on-success:
+          - create_eo_rolebinding_to_role
 
-       create_eo_rolebinding_to_role:
-         action: kubernetes.k8saction
-         input:
-           api_group: RbacAuthorizationV1Api
-           action_name: create_namespaced_role_binding
-           params:
-             namespace: <% $.namespace %>
-             body:
-               metadata:
-                 name: "environment-operator-namespace-access"
-                 namespace: <% $namespace %>
-               subjects:
-                 - kind: ServiceAccount
-                   name: environment-operator
-                   namespace: <% $.namespace %>
-               roleRef:
-                 kind: Role
-                 name: "environment-operator-namespace-access"
-                 apiGroup: rbac.authorization.k8s.io
-         on-success:
-           - set_eo_deployment
+      create_eo_rolebinding_to_role:
+        action: kubernetes.k8saction
+        input:
+          api_group: RbacAuthorizationV1Api
+          action_name: create_namespaced_role_binding
+          params:
+            namespace: <% $.namespace %>
+            body:
+              metadata:
+                name: "environment-operator-namespace-access"
+                namespace: <% $namespace %>
+              subjects:
+                - kind: ServiceAccount
+                  name: environment-operator
+                  namespace: <% $.namespace %>
+              roleRef:
+                kind: Role
+                name: "environment-operator-namespace-access"
+                apiGroup: rbac.authorization.k8s.io
+        on-success:
+          - set_eo_deployment
 
-       set_eo_deployment:
-         action: bitesize.set_eo_deployment
-         input:
-           namespace: <% $.namespace %>
-           gitRemoteRepository: <% $.gitRemoteRepository %>
-           gitBranch: <% $.gitBranch %>
-           project: <% $.project %>
-           environmentType: <% $.environmentType %>
-           bitesizeFile: <% $.bitesizeFile %>
-           imageVersion: <% $.imageVersion %>
-           environment: <% $.environment %>
-           awsRegion: <% $.awsRegion %>
-           image: <% $.image %>
-         publish:
-           deployment_template: <% task(set_eo_deployment).result.result %>
-         on-success:
-           - create_eo_deployment
+      set_eo_deployment:
+        action: bitesize.set_eo_deployment
+        input:
+          namespace: <% $.namespace %>
+          gitRemoteRepository: <% $.gitRemoteRepository %>
+          gitBranch: <% $.gitBranch %>
+          project: <% $.project %>
+          environmentType: <% $.environmentType %>
+          bitesizeFile: <% $.bitesizeFile %>
+          imageVersion: <% $.imageVersion %>
+          environment: <% $.environment %>
+          awsRegion: <% $.awsRegion %>
+          image: <% $.image %>
+        publish:
+          deployment_template: <% task(set_eo_deployment).result.result %>
+        on-success:
+          - create_eo_deployment
 
-       create_eo_deployment:
-         action: kubernetes.k8saction
-         input:
-           api_group: "ExtensionsV1beta1Api"
-           action_name: "create_namespaced_deployment"
-           params:
-             namespace: <% $.namespace %>
-             body: <% $.deployment_template %>
-         on-success:
-           - eo_output
+      create_eo_deployment:
+        action: kubernetes.k8saction
+        input:
+          api_group: "ExtensionsV1beta1Api"
+          action_name: "create_namespaced_deployment"
+          params:
+            namespace: <% $.namespace %>
+            body: <% $.deployment_template %>
+        on-success:
+          - eo_output
 
-       eo_output:
-          action: core.echo
-          input:
-            message: "auth-key: \n <% $.auth_token_file %>"
-          on-success:
-            - succeed
+      eo_output:
+        action: core.echo
+        input:
+          message: "auth-key: \n <% $.auth_token_file %>"
+        on-success:
+          - succeed

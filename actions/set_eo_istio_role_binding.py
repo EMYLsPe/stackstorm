@@ -10,17 +10,26 @@ appendSubjectTemplate = {
 
 class EOIstioRoleBinding(Action):
 
-    def run(self, namespace, istioRoleBinding):
+    def run(self, namespace, istioRoleBinding, append):
 
         self.namespace         = namespace
         self.istioRoleBinding  = istioRoleBinding
+        self.append            = append
 
-        return (True, self._appendEOIstioRoleBindingConf())
+        funct =  self._appendEOIstioRoleBindingConf() if append else self._removeEOIstioRoleBindingConf()
+
+        return (True, funct)
 
 
     def _appendEOIstioRoleBindingConf(self):
         newServiceAccount = appendSubjectTemplate
         newServiceAccount['namespace'] = self.namespace
         self.istioRoleBinding['subjects'].append(newServiceAccount)
+
+        return self.istioRoleBinding
+
+    def _removeEOIstioRoleBindingConf(self):
+        sa = next((item for item in self.istioRoleBinding['subjects'] if item["namespace"] == self.namespace), None)
+        self.istioRoleBinding['subjects'].remove(sa)
 
         return self.istioRoleBinding

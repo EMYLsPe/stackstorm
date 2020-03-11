@@ -12,3 +12,6 @@ parameters:
     istioRoleBinding:
         type: "object"
         required: true
+    append:
+        type: "boolean"
+        required: true
