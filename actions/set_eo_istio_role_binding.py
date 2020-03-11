@@ -29,7 +29,11 @@ class EOIstioRoleBinding(Action):
         return self.istioRoleBinding
 
     def _removeEOIstioRoleBindingConf(self):
-        sa = next((item for item in self.istioRoleBinding['subjects'] if item["namespace"] == self.namespace), None)
-        self.istioRoleBinding['subjects'].remove(sa)
+
+        if self.istioRoleBinding['subjects'] is not None:
+            sa = next((item for item in self.istioRoleBinding['subjects'] if item["namespace"] == self.namespace), None)
+
+            if sa is not None:
+                self.istioRoleBinding['subjects'].remove(sa)
 
         return self.istioRoleBinding

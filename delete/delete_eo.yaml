@@ -20,123 +20,292 @@ workflows:
           deployment: "environment-operator"
 
     tasks:
-       delete_eo_limits:
-         action: kubernetes.k8saction
-         input:
-           api_group: CoreV1Api
-           action_name: delete_namespaced_limit_range
-           params:
-             namespace: <% $.namespace %>
-             name: <% $.delete_names.limits %>
-             body: {}
+      check_eo_limits_is_exist:
+        action: kubernetes.k8saction
+        input:
+          api_group: CoreV1Api
+          action_name: read_namespaced_limit_range
+          params:
+            name: <% $.delete_names.limits %>
+            namespace: <% $.namespace %>
+        on-success:
+          - delete_eo_limits
+        on-error:
+          - check_eo_secret_git_private_key_is_exist
 
-       delete_k8s_secret_git_private_key:
-         action: kubernetes.k8saction
-         input:
-           api_group: CoreV1Api
-           action_name: delete_namespaced_secret
-           params:
-             namespace: <% $.namespace %>
-             name: <% $.delete_names.secret_git_private_key %>
-             body: {}
+      delete_eo_limits:
+        action: kubernetes.k8saction
+        input:
+          api_group: CoreV1Api
+          action_name: delete_namespaced_limit_range
+          params:
+            namespace: <% $.namespace %>
+            name: <% $.delete_names.limits %>
+            body: {}
+        on-success:
+          - check_eo_secret_git_private_key_is_exist
 
-       delete_eo_auth-token-file:
-         action: kubernetes.k8saction
-         input:
-           api_group: CoreV1Api
-           action_name: delete_namespaced_secret
-           params:
-             namespace: <% $.namespace %>
-             name: <% $.delete_names.secret_auth_token %>
-             body: {}
+      check_eo_secret_git_private_key_is_exist:
+        action: kubernetes.k8saction
+        input:
+          api_group: CoreV1Api
+          action_name: read_namespaced_secret
+          params:
+            name: <% $.delete_names.secret_git_private_key %>
+            namespace: <% $.namespace %>
+        on-success:
+          - delete_k8s_secret_git_private_key
+        on-error:
+          - check_eo_secret_auth_token_file_is_exist
 
-       delete_eo_ingress:
-         action: kubernetes.k8saction
-         input:
-           api_group: "ExtensionsV1beta1Api"
-           action_name: "delete_namespaced_ingress"
-           params:
-             namespace: <% $.namespace %>
-             name: <% $.delete_names.ingress %>
-             body: {}
+      delete_k8s_secret_git_private_key:
+        action: kubernetes.k8saction
+        input:
+          api_group: CoreV1Api
+          action_name: delete_namespaced_secret
+          params:
+            namespace: <% $.namespace %>
+            name: <% $.delete_names.secret_git_private_key %>
+            body: {}
+        on-success:
+          - check_eo_secret_auth_token_file_is_exist
 
-       delete_eo_svc:
-         action: kubernetes.k8saction
-         input:
-           api_group: "CoreV1Api"
-           action_name: "delete_namespaced_service"
-           params:
-             namespace: <% $.namespace %>
-             name: <% $.delete_names.svc %>
-             body: {}
+      check_eo_secret_auth_token_file_is_exist:
+        action: kubernetes.k8saction
+        input:
+          api_group: CoreV1Api
+          action_name: read_namespaced_secret
+          params:
+            name: <% $.delete_names.secret_auth_token %>
+            namespace: <% $.namespace %>
+        on-success:
+          - delete_eo_auth-token-file
+        on-error:
+          - check_eo_ingress_is_exist
 
-       delete_eo_service_account:
-         action: kubernetes.k8saction
-         input:
-           api_group: CoreV1Api
-           action_name: delete_namespaced_service_account
-           params:
-             namespace: <% $.namespace %>
-             name: <% $.delete_names.sa %>
-             body: {}
+      delete_eo_auth-token-file:
+        action: kubernetes.k8saction
+        input:
+          api_group: CoreV1Api
+          action_name: delete_namespaced_secret
+          params:
+            namespace: <% $.namespace %>
+            name: <% $.delete_names.secret_auth_token %>
+            body: {}
+        on-success:
+          - check_eo_ingress_is_exist
 
-       delete_eo_role_binding_to_clusterrole:
-         action: kubernetes.k8saction
-         input:
-           api_group: RbacAuthorizationV1Api
-           action_name: delete_namespaced_role_binding
-           params:
-             namespace: <% $.namespace %>
-             name: <% $.delete_names.RBtoCR %>
-             body: {}
+      check_eo_ingress_is_exist:
+        action: kubernetes.k8saction
+        input:
+          api_group: ExtensionsV1beta1Api
+          action_name: read_namespaced_ingress
+          params:
+            name: <% $.delete_names.ingress %>
+            namespace: <% $.namespace %>
+        on-success:
+          - delete_eo_ingress
+        on-error:
+          - check_eo_svc_is_exist
 
-       set_eo_istio_role_binding:
-         action: bitesize.set_eo_istio_role_binding
-         input:
-           namespace: <% $.namespace %>
-           istioRoleBinding: <% $.eo_istio_role_binding %>
-           append: "false"
-         publish:
-           eo_istio_role_binding: <% task(set_eo_istio_role_binding).result.result %>
+      delete_eo_ingress:
+        action: kubernetes.k8saction
+        input:
+          api_group: ExtensionsV1beta1Api
+          action_name: delete_namespaced_ingress
+          params:
+            namespace: <% $.namespace %>
+            name: <% $.delete_names.ingress %>
+            body: {}
+        on-success:
+          - check_eo_svc_is_exist
 
-       remove_eo_istio_role_binding:
-         action: kubernetes.k8saction
-         input:
-           api_group: RbacAuthorizationV1Api
-           action_name: patch_namespaced_role_binding
-           params:
-             name: environment-operator
-             namespace: istio-system
-             body: <% $.eo_istio_role_binding %>
+      check_eo_svc_is_exist:
+        action: kubernetes.k8saction
+        input:
+          api_group: CoreV1Api
+          action_name: read_namespaced_service
+          params:
+            name: <% $.delete_names.svc %>
+            namespace: <% $.namespace %>
+        on-success:
+          - delete_eo_svc
+        on-error:
+          - check_eo_sa_is_exist
 
-       delete_eo_role:
-         action: kubernetes.k8saction
-         input:
-           api_group: RbacAuthorizationV1Api
-           action_name: delete_namespaced_role
-           params:
-             namespace: <% $.namespace %>
-             name: <% $.delete_names.role %>
-             body: {}
+      delete_eo_svc:
+        action: kubernetes.k8saction
+        input:
+          api_group: "CoreV1Api"
+          action_name: "delete_namespaced_service"
+          params:
+            namespace: <% $.namespace %>
+            name: <% $.delete_names.svc %>
+            body: {}
+        on-success:
+          - check_eo_sa_is_exist
 
-       delete_eo_rolebinding_to_role:
-         action: kubernetes.k8saction
-         input:
-           api_group: RbacAuthorizationV1Api
-           action_name: delete_namespaced_role_binding
-           params:
-             namespace: <% $.namespace %>
-             name: <% $.delete_names.RBtoRole %>
-             body: {}
+      check_eo_sa_is_exist:
+        action: kubernetes.k8saction
+        input:
+          api_group: CoreV1Api
+          action_name: read_namespaced_service_account
+          params:
+            name: <% $.delete_names.sa %>
+            namespace: <% $.namespace %>
+        on-success:
+          - delete_eo_service_account
+        on-error:
+          - check_eo_role_binding_to_cluster_role_is_exist
 
-       delete_eo_deployment:
-         action: kubernetes.k8saction
-         input:
-           api_group: "ExtensionsV1beta1Api"
-           action_name: "delete_namespaced_deployment"
-           params:
-             namespace: <% $.namespace %>
-             name: <% $.delete_names.deployment %>
-             body: {}
-         on-success:
-           - succeed
+      delete_eo_service_account:
+        action: kubernetes.k8saction
+        input:
+          api_group: CoreV1Api
+          action_name: delete_namespaced_service_account
+          params:
+            namespace: <% $.namespace %>
+            name: <% $.delete_names.sa %>
+            body: {}
+        on-success:
+          - check_eo_role_binding_to_cluster_role_is_exist
+
+      check_eo_role_binding_to_cluster_role_is_exist:
+        action: kubernetes.k8saction
+        input:
+          api_group: RbacAuthorizationV1Api
+          action_name: read_namespaced_role_binding
+          params:
+            name: <% $.delete_names.RBtoCR %>
+            namespace: <% $.namespace %>
+        on-success:
+          - delete_eo_role_binding_to_clusterrole
+        on-error:
+          - check_eo_role_is_exist
+
+      delete_eo_role_binding_to_clusterrole:
+        action: kubernetes.k8saction
+        input:
+          api_group: RbacAuthorizationV1Api
+          action_name: delete_namespaced_role_binding
+          params:
+            namespace: <% $.namespace %>
+            name: <% $.delete_names.RBtoCR %>
+            body: {}
+        on-success:
+          - check_eo_role_is_exist
+
+      check_eo_role_is_exist:
+        action: kubernetes.k8saction
+        input:
+          api_group: RbacAuthorizationV1Api
+          action_name: read_namespaced_role
+          params:
+            name: <% $.delete_names.role %>
+            namespace: <% $.namespace %>
+        on-success:
+          - delete_eo_role
+        on-error:
+          - check_eo_role_binding_to_role_is_exist
+
+      delete_eo_role:
+        action: kubernetes.k8saction
+        input:
+          api_group: RbacAuthorizationV1Api
+          action_name: delete_namespaced_role
+          params:
+            namespace: <% $.namespace %>
+            name: <% $.delete_names.role %>
+            body: {}
+        on-success:
+          - check_eo_role_binding_to_role_is_exist
+
+      check_eo_role_binding_to_role_is_exist:
+        action: kubernetes.k8saction
+        input:
+          api_group: RbacAuthorizationV1Api
+          action_name: read_namespaced_role_binding
+          params:
+            name: <% $.delete_names.RBtoRole %>
+            namespace: <% $.namespace %>
+        on-success:
+          - delete_eo_rolebinding_to_role
+        on-error:
+          - check_eo_deployement_is_exist
+
+      delete_eo_rolebinding_to_role:
+        action: kubernetes.k8saction
+        input:
+          api_group: RbacAuthorizationV1Api
+          action_name: delete_namespaced_role_binding
+          params:
+            namespace: <% $.namespace %>
+            name: <% $.delete_names.RBtoRole %>
+            body: {}
+        on-success:
+          - check_eo_deployement_is_exist
+
+      check_eo_deployement_is_exist:
+        action: kubernetes.k8saction
+        input:
+          api_group: ExtensionsV1beta1Api
+          action_name: read_namespaced_deployment
+          params:
+            name: <% $.delete_names.deployment %>
+            namespace: <% $.namespace %>
+        on-success:
+          - delete_eo_deployment
+        on-error:
+          - check_eo_istio_role_binding_is_exist
+
+      delete_eo_deployment:
+        action: kubernetes.k8saction
+        input:
+          api_group: "ExtensionsV1beta1Api"
+          action_name: "delete_namespaced_deployment"
+          params:
+            namespace: <% $.namespace %>
+            name: <% $.delete_names.deployment %>
+            body: {}
+        on-success:
+          - check_eo_istio_role_binding_is_exist
+
+      check_eo_istio_role_binding_is_exist:
+        action: kubernetes.k8saction
+        input:
+          api_group: RbacAuthorizationV1Api
+          action_name: read_namespaced_role_binding
+          params:
+            name: environment-operator
+            namespace: istio-system
+        publish:
+          eo_istio_role_binding: <% task(check_eo_istio_role_binding_is_exist).result.result %>
+        on-success:
+          - set_eo_istio_role_binding
+        on-error:
+          - succeed
+
+      set_eo_istio_role_binding:
+        action: bitesize.set_eo_istio_role_binding
+        input:
+          namespace: <% $.namespace %>
+          istioRoleBinding: <% $.eo_istio_role_binding %>
+          append: "false"
+        publish:
+          eo_istio_role_binding: <% task(set_eo_istio_role_binding).result.result %>
+        on-success:
+          - remove_eo_istio_role_binding
+
+      remove_eo_istio_role_binding:
+        action: kubernetes.k8saction
+        input:
+          api_group: RbacAuthorizationV1Api
+          action_name: patch_namespaced_role_binding
+          params:
+            name: environment-operator
+            namespace: istio-system
+            body: <% $.eo_istio_role_binding %>
+        on-success:
+          - succeed
+
+
