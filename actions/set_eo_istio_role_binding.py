@@ -22,9 +22,14 @@ class EOIstioRoleBinding(Action):
 
 
     def _appendEOIstioRoleBindingConf(self):
+
         newServiceAccount = appendSubjectTemplate
         newServiceAccount['namespace'] = self.namespace
-        self.istioRoleBinding['subjects'].append(newServiceAccount)
+
+        if self.istioRoleBinding['subjects'] is not None:
+            self.istioRoleBinding['subjects'].append(newServiceAccount)
+        else:
+            self.istioRoleBinding['subjects'] = [newServiceAccount]
 
         return self.istioRoleBinding
 

@@ -1,11 +1,11 @@
 #!/bin/sh
 
 
-mv ./create_eo.yaml /opt/stackstorm/packs/bitesize/actions/workflows/
-mv ./delete/delete_eo.yaml /opt/stackstorm/packs/bitesize/actions/workflows/
+cp ./create_eo.yaml /opt/stackstorm/packs/bitesize/actions/workflows/
+cp ./delete/delete_eo.yaml /opt/stackstorm/packs/bitesize/actions/workflows/
 
-mv ./* /opt/stackstorm/packs/bitesize/actions/
-mv ./delete/* /opt/stackstorm/packs/bitesize/actions/
+cp ./* /opt/stackstorm/packs/bitesize/actions/
+cp ./delete/* /opt/stackstorm/packs/bitesize/actions/
 
 cd /opt/stackstorm/packs/bitesize/actions/
 
