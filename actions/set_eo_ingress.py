@@ -6,9 +6,9 @@ ingress = {
     "metadata": {
         "namespace": "",
         "name": "environment-operator",
-        "annotations":
+        "annotations": {
             "external-dns.alpha.kubernetes.io/target": ""
-
+        }
     },
     "spec": {
         "rules": [
