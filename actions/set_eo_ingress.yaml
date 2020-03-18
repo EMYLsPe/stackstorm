@@ -11,3 +11,12 @@
           required: true
         ingressHost:
           type: "string"
+        environment:
+          type: "string"
+          required: true
+        region:
+          type: "string"
+          required: true
+        environment_type:
+          type: "string"
+          required: true

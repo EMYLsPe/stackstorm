@@ -106,6 +106,9 @@ workflows:
         input:
           namespace: <% $.namespace %>
           ingressHost: <% $.ingressHost %>
+          environment: <% $.environment %>
+          region: <% $.awsRegion %>
+          environment_type: <% $.environmentType %>
         publish:
           ingress_template: <% task(set_eo_ingress).result.result %>
         on-success:
