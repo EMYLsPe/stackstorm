@@ -2,10 +2,10 @@
 
 
 cp ./create_eo.yaml /opt/stackstorm/packs/bitesize/actions/workflows/
-cp ./delete/delete_eo.yaml /opt/stackstorm/packs/bitesize/actions/workflows/
+cp ../delete/delete_eo.yaml /opt/stackstorm/packs/bitesize/actions/workflows/
 
 cp ./* /opt/stackstorm/packs/bitesize/actions/
-cp ./delete/* /opt/stackstorm/packs/bitesize/actions/
+cp ../delete/* /opt/stackstorm/packs/bitesize/actions/
 
 cd /opt/stackstorm/packs/bitesize/actions/
 
