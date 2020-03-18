@@ -20,6 +20,16 @@ workflows:
           deployment: "environment-operator"
 
     tasks:
+      delete_pods:
+        action: kubernetes.k8saction
+        input:
+          api_group: CoreV1Api
+          action_name: delete_namespaced_pod
+          params:
+            namespace: <% $.namespace %>
+            name: "environment-operator"
+            body: {}
+
       check_eo_limits_is_exist:
         action: kubernetes.k8saction
         input:
