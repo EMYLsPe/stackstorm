@@ -81,7 +81,7 @@ workflows:
           namespace: <% $.namespace %>
           name: "auth-token-file"
           secrets:
-            auth-token-file: <% $.auth_token_file %>
+            token: <% $.auth_token_file %>
           isSecretEncrypted: false
         publish:
           auth_token_file_secret_template: <% task(get_eo_uuidgen_secret_template).result.result %>
