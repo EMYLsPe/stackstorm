@@ -1,17 +1,17 @@
 ---
-name: "set_eo_istio_role_binding"
-entry_point: "set_eo_istio_role_binding.py"
-pack: "bitesize"
-description: "set LimitRange k8s resource payload for the Environment Operator deployment"
-runner_type: python-script
-enabled: true
-parameters:
+  name: "set_eo_istio_role_binding"
+  entry_point: "set_eo_istio_role_binding.py"
+  pack: "bitesize"
+  description: "set K8S RoleBinding resource payload for the Environment Operator Istio Role Binding"
+  runner_type: python-script
+  enabled: true
+  parameters:
     namespace:
-        type: "string"
-        required: true
+      type: "string"
+      required: true
     istioRoleBinding:
-        type: "object"
-        required: true
+      type: "object"
+      required: true
     append:
-        type: "boolean"
-        required: true
+      type: "boolean"
+      required: true

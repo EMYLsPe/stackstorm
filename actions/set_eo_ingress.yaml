@@ -1,22 +1,22 @@
 ---
-    name: "set_eo_ingress"
-    entry_point: "set_eo_ingress.py"
-    pack: "bitesize"
-    description: "set Ingress k8s resource payload for the Environment Operator"
-    runner_type: python-script
-    enabled: true
-    parameters:
-        namespace:
-          type: "string"
-          required: true
-        ingressHost:
-          type: "string"
-        environment:
-          type: "string"
-          required: true
-        region:
-          type: "string"
-          required: true
-        environment_type:
-          type: "string"
-          required: true
+  name: "set_eo_ingress"
+  entry_point: "set_eo_ingress.py"
+  pack: "bitesize"
+  description: "set K8S Ingress resource payload for the Environment Operator ingress"
+  runner_type: python-script
+  enabled: true
+  parameters:
+    namespace:
+      type: "string"
+      required: true
+    ingressHost:
+      type: "string"
+    environment:
+      type: "string"
+      required: true
+    region:
+      type: "string"
+      required: true
+    environment_type:
+      type: "string"
+      required: true

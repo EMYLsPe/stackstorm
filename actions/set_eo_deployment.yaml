@@ -1,38 +1,38 @@
 ---
-    name: "set_eo_deployment"
-    entry_point: "set_eo_deployment.py"
-    pack: "bitesize"
-    description: "set Deployment k8s resource payload for the Environment Operator"
-    runner_type: python-script
-    enabled: true
-    parameters:
-        namespace:
-          type: "string"
-          required: true
-        gitRemoteRepository:
-          type: "string"
-          required: true
-        gitBranch:
-          type: "string"
-          required: true
-        project:
-          type: "string"
-          required: true
-        environmentType:
-          type: "string"
-          required: true
-        bitesizeFile:
-          type: "string"
-          required: true
-        imageVersion:
-          type: "string"
-          required: true
-        awsRegion:
-          type: "string"
-          required: true
-        environment:
-          type: "string"
-          description: "eg: glp1, paas1, ..."
-          required: true
-        image:
-          type: "string"
+  name: "set_eo_deployment"
+  entry_point: "set_eo_deployment.py"
+  pack: "bitesize"
+  description: "set K8S Deployment resource template for the Environment Operator deployment"
+  runner_type: python-script
+  enabled: true
+  parameters:
+    namespace:
+      type: "string"
+      required: true
+    gitRemoteRepository:
+      type: "string"
+      required: true
+    gitBranch:
+      type: "string"
+      required: true
+    project:
+      type: "string"
+      required: true
+    environmentType:
+      type: "string"
+      required: true
+    bitesizeFile:
+      type: "string"
+      required: true
+    imageVersion:
+      type: "string"
+      required: true
+    awsRegion:
+      type: "string"
+      required: true
+    environment:
+      type: "string"
+      description: "eg: glp1, paas1, ..."
+      required: true
+    image:
+      type: "string"

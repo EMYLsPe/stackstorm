@@ -1,12 +1,12 @@
 ---
-name: "delete_eo"
-runner_type: "mistral-v2"
-description: "delete all the resources of the Environment Operator"
-enabled: true
-entry_point: "workflows/delete_eo.yaml"
-pack: "bitesize"
-parameters:
-  namespace:
-    type: "string"
-    description: "namespace to delete EO"
-    required: true
+  name: "delete_eo"
+  runner_type: "mistral-v2"
+  description: "delete all K8S resources of the Environment Operator"
+  enabled: true
+  entry_point: "workflows/delete_eo.yaml"
+  pack: "bitesize"
+  parameters:
+    namespace:
+      type: "string"
+      description: "namespace to delete EO"
+      required: true
