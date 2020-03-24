@@ -129,7 +129,7 @@ workflows:
           action_name: change_resource_record_sets
           region: us-east-2
           params:
-            HostedZoneId: <% $.hostZoneID %>
+            HostedZoneId: <% $.delete_names.hostZoneID %>
             ChangeBatch:
               Changes:
                 - Action: "DELETE"
