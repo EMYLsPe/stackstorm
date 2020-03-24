@@ -20,7 +20,7 @@ class EODNSRoute:
             self.createRoute53Entry()
 
         else :
-            return (False, "Given host is not permitted in bite.pearsondev.tech hostZone")
+            return False, "Given host is not permitted in bite.pearsondev.tech hostZone")
 
 
     def createRoute53Entry(self):
