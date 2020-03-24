@@ -319,7 +319,7 @@ workflows:
         action: bitesize.create_eo_route53_entry
         input:
           host: <% $.ingress_template.spec.rules[0].host %>
-          target: <% $.ingress_template.metadata.annotations.external-dns.alpha.kubernetes.io/target %>
+          target: lb.<% $.environment %>.<% $.awsRegion %>.<% $.environmentType %>.prsn.io
         on-success:
           - eo_output
         on-error:
