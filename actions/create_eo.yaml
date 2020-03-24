@@ -313,6 +313,16 @@ workflows:
             namespace: <% $.namespace %>
             body: <% $.deployment_template %>
         on-success:
+          - create_eo_route53_entry
+
+      create_eo_route53_entry:
+        action: bitesize.create_eo_route53_entry
+        input:
+          host: <% $.ingress_template.spec.rules[0].host %>
+          target: <% $.ingress_template.metadata.annotations.external-dns.alpha.kubernetes.io/target %>
+        on-success:
+          - eo_output
+        on_error:
           - eo_output
 
       eo_output:

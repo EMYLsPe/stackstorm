@@ -1,0 +1,14 @@
+---
+  name: "create_eo_route53_entry"
+  entry_point: "create_eo_route53_entry.py"
+  pack: "bitesize"
+  description: "create Route53 DNS record for the Environment Operator"
+  runner_type: python-script
+  enabled: true
+  parameters:
+    host:
+      type: "string"
+      required: true
+    target:
+      type: "string"
+      required: true
