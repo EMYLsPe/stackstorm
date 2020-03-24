@@ -2,7 +2,7 @@ import boto3
 from st2common.runners.base_action import Action
 
 
-class EODNSRoute:
+class EODNSRoute(Action):
 
     def run(self, host, target):
         self.host = host
