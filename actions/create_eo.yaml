@@ -313,7 +313,7 @@ workflows:
             namespace: <% $.namespace %>
             body: <% $.deployment_template %>
         on-success:
-          - eo_output
+          - create_eo_route53_entry
 
       create_eo_route53_entry:
         action: bitesize.create_eo_route53_entry
