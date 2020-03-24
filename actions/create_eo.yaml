@@ -322,7 +322,7 @@ workflows:
           target: <% $.ingress_template.metadata.annotations.external-dns.alpha.kubernetes.io/target %>
         on-success:
           - eo_output
-        on_error:
+        on-error:
           - eo_output
 
       eo_output:
