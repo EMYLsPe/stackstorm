@@ -313,21 +313,11 @@ workflows:
             namespace: <% $.namespace %>
             body: <% $.deployment_template %>
         on-success:
-          - create_eo_route53_entry
-
-      create_eo_route53_entry:
-        action: bitesize.create_eo_route53_entry
-        input:
-          host: <% $.ingress_template.spec.rules[0].host %>
-          target: lb.<% $.environment %>.<% $.awsRegion %>.<% $.environmentType %>.prsn.io
-        on-success:
-          - eo_output
-        on-error:
           - eo_output
 
       eo_output:
         action: core.echo
         input:
-          message: "auth-key: \n <% $.auth_token_file %>"
+          message: "auth-key: <% $.auth_token_file %>\n\nhost: <% $.ingress_template.spec.rules[0].host %>"
         on-success:
           - succeed

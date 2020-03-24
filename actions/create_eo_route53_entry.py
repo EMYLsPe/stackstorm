@@ -12,11 +12,10 @@ class EODNSRoute(Action):
         length = len(hostArray)
         hostZone = hostArray[length-3] + "." + hostArray[length-2] + "." + hostArray[length-1]
 
-#         if hostZone == "bite.pearsondev.tech":
-        if hostZone == "dev.prsn.io":
+        if hostZone == "bite.pearsondev.tech":
             return (True, self.createRoute53Entry())
         else:
-            return False, "Given host is not permitted in bite.pearsondev.tech hostZone"
+            return False, "Given host name is not permitted in bite.pearsondev.tech hostZone"
 
 
     def createRoute53Entry(self):
