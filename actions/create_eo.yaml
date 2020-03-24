@@ -315,6 +315,16 @@ workflows:
         on-success:
           - eo_output
 
+      create_eo_route53_entry:
+        action: bitesize.create_eo_route53_entry
+        input:
+          host: <% $.ingress_template.spec.rules[0].host %>
+          target: lb.<% $.environment %>.<% $.awsRegion %>.<% $.environmentType %>.prsn.io
+        on-success:
+          - eo_output
+        on-error:
+          - eo_output
+
       eo_output:
         action: core.echo
         input:
