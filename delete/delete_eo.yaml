@@ -18,7 +18,7 @@ workflows:
           role: "environment-operator-namespace-access"
           RBtoRole: "environment-operator-namespace-access"
           deployment: "environment-operator"
-          hostZoneID: "Z10308243O3W8MXERVWSX"
+          hostZoneID: "Z2AIIKJP90E872"
 
     tasks:
       check_eo_limits_is_exist:

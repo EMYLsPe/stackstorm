@@ -18,7 +18,7 @@ workflows:
       - awsRegion
       - image
       - ingressHost
-      - hostZoneID: "Z10308243O3W8MXERVWSX"
+      - hostZoneID: "Z2AIIKJP90E872"
 
     tasks:
       set_eo_limits:

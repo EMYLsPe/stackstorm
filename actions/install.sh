@@ -17,6 +17,6 @@ st2 action create set_eo_limits.yaml
 st2 action create set_eo_role.yaml
 st2 action create set_eo_secrets.yaml
 st2 action create set_eo_svc.yaml
-st2 action create create_eo_route53_entry.yaml
+#st2 action create create_eo_route53_entry.yaml
 
 st2 action create delete_eo.meta.yaml
