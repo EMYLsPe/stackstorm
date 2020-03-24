@@ -9,6 +9,7 @@ st2 action delete bitesize.set_eo_limits
 st2 action delete bitesize.set_eo_role
 st2 action delete bitesize.set_eo_secrets
 st2 action delete bitesize.set_eo_svc
+st2 action delete bitesize.create_eo_route53_entry
 
 cd /opt/stackstorm/packs/bitesize/actions/
 sudo ls | grep 'eo' | xargs rm

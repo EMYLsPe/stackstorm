@@ -8,19 +8,15 @@ class EODNSRoute:
         self.host = host
         self.target = target
 
-        return (True, self._checkRoute53Entry())
-
-    def _checkeRoute53Entry(self):
-        hostArray = self.host.split(".")
+        hostArray = host.split(".")
         length = len(hostArray)
         hostZone = hostArray[length-3] + "." + hostArray[length-2] + "." + hostArray[length-1]
 
 #         if hostZone == "bite.pearsondev.tech":
         if hostZone == "dev.prsn.io":
-            self.createRoute53Entry()
-
-        else :
-            return False, "Given host is not permitted in bite.pearsondev.tech hostZone")
+            return (True, self.createRoute53Entry())
+        else:
+            return False, "Given host is not permitted in bite.pearsondev.tech hostZone"
 
 
     def createRoute53Entry(self):
