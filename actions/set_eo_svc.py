@@ -19,7 +19,7 @@ svc = {
             }
         ],
         "selector": {
-          "name": "environment-operator"
+            "name": "environment-operator"
         }
     }
 }
@@ -28,9 +28,8 @@ svc = {
 class CreateEOService(Action):
 
     def run(self, namespace):
-
         self.namespace = namespace
-    
+
         return (True, self._createSVCConfig())
 
     def _createSVCConfig(self):

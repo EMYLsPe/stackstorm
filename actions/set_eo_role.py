@@ -1,3 +1,5 @@
+from st2common.runners.base_action import Action
+
 roleTemplate = {
     "kind": "Role",
     "apiVersion": "rbac.authorization.k8s.io/v1",
@@ -8,22 +10,22 @@ roleTemplate = {
     "rules": [
         {
             "apiGroups": ["*"],
-             "verbs": ["*"],
-             "resources": ["*"]
+            "verbs": ["*"],
+            "resources": ["*"]
         }
     ]
 }
 
+
 class CreateEORole(Action):
 
     def run(self, namespace):
-
         self.namespace = namespace
 
         return (True, self._createRoleConfig())
 
     def _createRoleConfig(self):
         myconf = roleTemplate
-        myconf['metadata']['namespace']    = self.namespace
+        myconf['metadata']['namespace'] = self.namespace
 
         return myconf

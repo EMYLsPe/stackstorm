@@ -8,33 +8,32 @@ limitsTemplate = {
         "namespace": ""
     },
     "spec": {
-		"limits": [
-			{
-				"default": {
-					"cpu": "1",
-					"memory": "4Gi"
-				},
-				"defaultRequest": {
-					"cpu": "1",
-					"memory": "4Gi"
-				},
-				"max": {
-					"cpu": "4",
-					"memory": "8Gi"
-				},
-				"type": "Container"
-			}
-		]
-	}
+        "limits": [
+            {
+                "default": {
+                    "cpu": "1",
+                    "memory": "4Gi"
+                },
+                "defaultRequest": {
+                    "cpu": "1",
+                    "memory": "4Gi"
+                },
+                "max": {
+                    "cpu": "4",
+                    "memory": "8Gi"
+                },
+                "type": "Container"
+            }
+        ]
+    }
 }
 
 
 class CreateEOLimits(Action):
 
     def run(self, namespace):
-
         self.namespace = namespace
-    
+
         return (True, self._createLimitsConfig())
 
     def _createLimitsConfig(self):

@@ -14,10 +14,15 @@ deploymentTemplate = {
         "replicas": 1,
         "revisionHistoryLimit": 10,
         "selector": {"matchLabels": {"name": "environment-operator"}},
-        "strategy": {"rollingUpdate": {"maxSurge": 1, "maxUnavailable": 1}, "type": "RollingUpdate"},
+        "strategy": {
+            "rollingUpdate": {"maxSurge": 1, "maxUnavailable": 1}, "type": "RollingUpdate"},
         "template": {
             "metadata": {
-                "labels": {"name": "environment-operator", "app": "environment-operator", "version": "v1.0.0"},
+                "labels": {
+                    "name": "environment-operator",
+                    "app": "environment-operator",
+                    "version": "v1.0.0"
+                },
                 "name": "environment-operator"
             },
             "spec": {
@@ -36,7 +41,10 @@ deploymentTemplate = {
                             {
                                 "name": "GIT_PRIVATE_KEY",
                                 "valueFrom": {
-                                    "secretKeyRef": {"key": "key", "name": "git-private-key"}
+                                    "secretKeyRef": {
+                                        "key": "key",
+                                        "name": "git-private-key"
+                                    }
                                 }
                             },
                             {
@@ -66,7 +74,10 @@ deploymentTemplate = {
                             {
                                 "name": "NAMESPACE",
                                 "valueFrom": {
-                                    "fieldRef": {"apiVersion": "v1", "fieldPath": "metadata.namespace"}
+                                    "fieldRef": {
+                                        "apiVersion": "v1",
+                                        "fieldPath": "metadata.namespace"
+                                    }
                                 }
                             },
                             {
@@ -122,7 +133,7 @@ deploymentTemplate = {
                     },
                     {
                         "name": "git-key",
-                        "secret": {"defaultMode": 420,  "secretName": "git-private-key"}
+                        "secret": {"defaultMode": 420, "secretName": "git-private-key"}
                     }
                 ]
             }
@@ -133,32 +144,36 @@ deploymentTemplate = {
 
 class CreateEODeployment(Action):
 
-    def run(self, namespace, gitRemoteRepository, gitBranch, project, environmentType, bitesizeFile, imageVersion, environment, awsRegion, image):
-
-        self.namespace           = namespace
+    def run(self, namespace, gitRemoteRepository, gitBranch,
+            project, environmentType, bitesizeFile, imageVersion, environment, awsRegion, image):
+        self.namespace = namespace
         self.gitRemoteRepository = gitRemoteRepository
-        self.gitBranch           = gitBranch
-        self.project             = project
-        self.environmentType     = environmentType
-        self.bitesizeFile        = bitesizeFile
-        self.imageVersion        = imageVersion
-        self.environment         = environment
-        self.awsRegion           = awsRegion
-        self.image               = image
+        self.gitBranch = gitBranch
+        self.project = project
+        self.environmentType = environmentType
+        self.bitesizeFile = bitesizeFile
+        self.imageVersion = imageVersion
+        self.environment = environment
+        self.awsRegion = awsRegion
+        self.image = image
 
         return (True, self._createDeploymentConfig())
 
     def _createDeploymentConfig(self):
         myconf = deploymentTemplate
         myconf['metadata']['namespace'] = self.namespace
-        myconf['spec']['template']['spec']['containers'][0]['env'][0]['value']  = self.gitRemoteRepository
-        myconf['spec']['template']['spec']['containers'][0]['env'][1]['value']  = self.gitBranch
-        myconf['spec']['template']['spec']['containers'][0]['env'][4]['value']  = self.project
-        myconf['spec']['template']['spec']['containers'][0]['env'][5]['value']  = self.environmentType
-        myconf['spec']['template']['spec']['containers'][0]['env'][6]['value']  = self.bitesizeFile
+        myconf['spec']['template']['spec']['containers'][0]['env'][0]['value'] \
+            = self.gitRemoteRepository
+        myconf['spec']['template']['spec']['containers'][0]['env'][1]['value'] = self.gitBranch
+        myconf['spec']['template']['spec']['containers'][0]['env'][4]['value'] = self.project
+        myconf['spec']['template']['spec']['containers'][0]['env'][5]['value'] \
+            = self.environmentType
+        myconf['spec']['template']['spec']['containers'][0]['env'][6]['value'] = self.bitesizeFile
         myconf['spec']['template']['spec']['containers'][0]['env'][11]['value'] = self.environment
         myconf['spec']['template']['spec']['containers'][0]['env'][12]['value'] = self.awsRegion
-        myconf['spec']['template']['spec']['containers'][0]['env'][13]['value'] = self.environmentType
-        myconf['spec']['template']['spec']['containers'][0]['image']            = self.image + ':' + self.imageVersion
+        myconf['spec']['template']['spec']['containers'][0]['env'][13]['value'] \
+            = self.environmentType
+        myconf['spec']['template']['spec']['containers'][0]['image'] \
+            = self.image + ':' + self.imageVersion
 
         return myconf
