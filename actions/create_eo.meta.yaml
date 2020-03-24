@@ -54,6 +54,4 @@
       required: true
     ingressHost:
       type: "string"
-      description: "default host is : environment-operator.<namespace>.bite.pearsondev.tech , "
-                   "you can change it here.\n "
-                   "NOTE: If host zone is no bite.pearsondev.tech then the route53 entry creation will be failed."
+      description: "default host is : environment-operator.<namespace>.bite.pearsondev.tech , you can change it here.\n NOTE: If host zone is no bite.pearsondev.tech then the route53 entry creation will be failed."
