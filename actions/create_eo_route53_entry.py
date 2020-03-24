@@ -19,7 +19,8 @@ class EODNSRoute:
         if hostZone == "dev.prsn.io":
             self.createRoute53Entry()
 
-        else return (False, "Given host is not permitted in bite.pearsondev.tech hostZone")
+        else :
+            return (False, "Given host is not permitted in bite.pearsondev.tech hostZone")
 
 
     def createRoute53Entry(self):
