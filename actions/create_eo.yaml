@@ -18,6 +18,7 @@ workflows:
       - awsRegion
       - image
       - ingressHost
+      - hostZoneID: "Z10308243O3W8MXERVWSX"
 
     tasks:
       set_eo_limits:
@@ -123,6 +124,28 @@ workflows:
             namespace: <% $.namespace %>
             body: <% $.ingress_template %>
         on-success:
+          - create_eo_route53_entry
+
+      create_eo_route53_entry:
+        action: aws_boto3.boto3action
+        input:
+          service: route53
+          action_name: change_resource_record_sets
+          region: <% $.awsRegion %>
+          params:
+            HostedZoneId: <% $.hostZoneID %>
+            ChangeBatch:
+              Changes:
+                - Action: "CREATE"
+                  ResourceRecordSet:
+                    Name: <% $.ingress_template.spec.rules[0].host %>
+                    Type: "CNAME"
+                    TTL: 300
+                    ResourceRecords:
+                      - Value: lb.<% $.environment %>.<% $.awsRegion %>.<% $.environmentType %>.prsn.io
+        on-success:
+          - set_eo_svc
+        on-error:
           - set_eo_svc
 
       set_eo_svc:
@@ -313,16 +336,6 @@ workflows:
             namespace: <% $.namespace %>
             body: <% $.deployment_template %>
         on-success:
-          - create_eo_route53_entry
-
-      create_eo_route53_entry:
-        action: bitesize.create_eo_route53_entry
-        input:
-          host: <% $.ingress_template.spec.rules[0].host %>
-          target: lb.<% $.environment %>.<% $.awsRegion %>.<% $.environmentType %>.prsn.io
-        on-success:
-          - eo_output
-        on-error:
           - eo_output
 
       eo_output:

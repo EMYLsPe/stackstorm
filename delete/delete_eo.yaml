@@ -18,6 +18,7 @@ workflows:
           role: "environment-operator-namespace-access"
           RBtoRole: "environment-operator-namespace-access"
           deployment: "environment-operator"
+          hostZoneID: "Z10308243O3W8MXERVWSX"
 
     tasks:
       check_eo_limits_is_exist:
@@ -105,6 +106,7 @@ workflows:
             namespace: <% $.namespace %>
         on-success:
           - delete_eo_ingress
+          - delete_eo_route53_entry
         on-error:
           - check_eo_svc_is_exist
 
@@ -119,6 +121,24 @@ workflows:
             body: {}
         on-success:
           - check_eo_svc_is_exist
+
+      delete_eo_route53_entry:
+        action: aws_boto3.boto3action
+        input:
+          service: route53
+          action_name: change_resource_record_sets
+          region: us-east-2
+          params:
+            HostedZoneId: <% $.hostZoneID %>
+            ChangeBatch:
+              Changes:
+                - Action: "DELETE"
+                  ResourceRecordSet:
+                    Name: <% task(check_eo_ingress_is_exist).result.result.spec.rules.first().host %>
+                    Type: "CNAME"
+                    TTL: 300
+                    ResourceRecords:
+                      - Value: <% task(check_eo_ingress_is_exist).result.result.metadata.annotations.get("external-dns.alpha.kubernetes.io/target") %>
 
       check_eo_svc_is_exist:
         action: kubernetes.k8saction
