@@ -8,7 +8,7 @@
   parameters:
     namespace:
       type: "string"
-      description: "namespace to create EO eg: sllax-dev => <project name>-<environment type>"
+      description: "Namespace to create EO eg: sllax-dev => <project name>-<environment type>"
       required: true
     gitRemoteRepository:
       type: "string"
@@ -20,11 +20,15 @@
       required: true
     project:
       type: "string"
-      description: "project name eg: sllax, lass"
+      description: "Project name eg: sllax, lass"
       required: true
     environmentType:
       type: "string"
       description: "eg: pre, nft, stg, ..."
+      required: true
+    environmentName:
+      type: "string"
+      description: "Enter the bitesizeFile`s environment name"
       required: true
     bitesizeFile:
       type: "string"
@@ -37,7 +41,7 @@
       required: true
     git_private_key:
       type: "string"
-      description: "enter git private key without encoding"
+      description: "Enter git private key without encoding"
       required: true
     environment:
       type: "string"
@@ -50,8 +54,8 @@
     image:
       default: "pearsontechnology/environment-operator"
       type: "string"
-      description: "provide environment-operator image or keep the default image"
+      description: "Provide environment-operator image or keep the default image"
       required: true
     ingressHost:
       type: "string"
-      description: "default host is : environment-operator.<namespace>.bite.pearsondev.tech , you can change it here.\n NOTE: If host zone is not bite.pearsondev.tech and the aws account is not bitesize-prod then the route53 entry creation will be failed."
+      description: "Default host is : environment-operator.<namespace>.bite.pearsondev.tech , you can change it here.\n NOTE: If host zone is not bite.pearsondev.tech and the aws account is not bitesize-prod then the route53 entry creation will be failed."

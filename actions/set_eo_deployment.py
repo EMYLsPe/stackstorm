@@ -145,7 +145,7 @@ deploymentTemplate = {
 class CreateEODeployment(Action):
 
     def run(self, namespace, gitRemoteRepository, gitBranch,
-            project, environmentType, bitesizeFile, imageVersion, environment, awsRegion, image):
+            project, environmentType, bitesizeFile, imageVersion, environment, awsRegion, image, environmentName):
         self.namespace = namespace
         self.gitRemoteRepository = gitRemoteRepository
         self.gitBranch = gitBranch
@@ -156,6 +156,7 @@ class CreateEODeployment(Action):
         self.environment = environment
         self.awsRegion = awsRegion
         self.image = image
+        self.environmentName = environmentName
 
         return (True, self._createDeploymentConfig())
 
@@ -167,7 +168,7 @@ class CreateEODeployment(Action):
         myconf['spec']['template']['spec']['containers'][0]['env'][1]['value'] = self.gitBranch
         myconf['spec']['template']['spec']['containers'][0]['env'][4]['value'] = self.project
         myconf['spec']['template']['spec']['containers'][0]['env'][5]['value'] \
-            = self.environmentType
+            = self.environmentName
         myconf['spec']['template']['spec']['containers'][0]['env'][6]['value'] = self.bitesizeFile
         myconf['spec']['template']['spec']['containers'][0]['env'][11]['value'] = self.environment
         myconf['spec']['template']['spec']['containers'][0]['env'][12]['value'] = self.awsRegion

@@ -36,3 +36,5 @@
       required: true
     image:
       type: "string"
+    environmentName:
+      type: "string"

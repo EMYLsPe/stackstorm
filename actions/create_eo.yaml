@@ -11,6 +11,7 @@ workflows:
       - gitBranch
       - project
       - environmentType
+      - environmentName
       - bitesizeFile
       - imageVersion
       - git_private_key
@@ -322,6 +323,7 @@ workflows:
           environment: <% $.environment %>
           awsRegion: <% $.awsRegion %>
           image: <% $.image %>
+          environmentName: <% $.environmentName %>
         publish:
           deployment_template: <% task(set_eo_deployment).result.result %>
         on-success:
